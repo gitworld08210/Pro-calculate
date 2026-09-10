@@ -1,27 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Adaptive-icon foreground. The launcher applies a large safe-zone crop, so all
+    artwork sits inside the central ~66dp of the 108dp canvas. Four calculator
+    buttons in a 2x2 grid: +  -  on top, x  =  below, with the = in amber.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Champagne ring -->
+    <!-- Rounded tile behind the buttons -->
     <path
-        android:fillColor="#00000000"
-        android:pathData="M54,28 C68.36,28 80,39.64 80,54 C80,68.36 68.36,80 54,80 C39.64,80 28,68.36 28,54 C28,39.64 39.64,28 54,28 Z"
-        android:strokeColor="#C9A227"
-        android:strokeWidth="2.4" />
+        android:fillColor="#3A3A40"
+        android:pathData="M38,34 h32 a10,10 0 0 1 10,10 v20 a10,10 0 0 1 -10,10 h-32 a10,10 0 0 1 -10,-10 v-20 a10,10 0 0 1 10,-10 z" />
 
-    <!-- Accent dot -->
+    <!-- Top-left button (plus) -->
     <path
-        android:fillColor="#C9A227"
-        android:pathData="M54,38.5 m-2.8,0 a2.8,2.8 0 1,0 5.6,0 a2.8,2.8 0 1,0 -5.6,0 z" />
+        android:fillColor="#5A5A62"
+        android:pathData="M46,44 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+    <path
+        android:fillColor="#F2F2F2"
+        android:pathData="M45,40.5 h2 v7 h-2 z" />
+    <path
+        android:fillColor="#F2F2F2"
+        android:pathData="M42.5,43 h7 v2 h-7 z" />
 
-    <!-- Equals bars -->
+    <!-- Top-right button (minus) -->
     <path
-        android:fillColor="#F0D48A"
-        android:pathData="M43.5,49 L64.5,49 A2.5,2.5 0 0 1 64.5,54 L43.5,54 A2.5,2.5 0 0 1 43.5,49 Z" />
+        android:fillColor="#5A5A62"
+        android:pathData="M62,44 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
     <path
-        android:fillColor="#F0D48A"
-        android:pathData="M43.5,60 L64.5,60 A2.5,2.5 0 0 1 64.5,65 L43.5,65 A2.5,2.5 0 0 1 43.5,60 Z" />
+        android:fillColor="#F2F2F2"
+        android:pathData="M58.5,43 h7 v2 h-7 z" />
+
+    <!-- Bottom-left button (times) -->
+    <path
+        android:fillColor="#5A5A62"
+        android:pathData="M46,60 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+    <path
+        android:fillColor="#F2F2F2"
+        android:pathData="M43.4,56.6 l5.2,5.2 l-1.4,1.4 l-5.2,-5.2 z" />
+    <path
+        android:fillColor="#F2F2F2"
+        android:pathData="M48.6,56.6 l1.4,1.4 l-5.2,5.2 l-1.4,-1.4 z" />
+
+    <!-- Bottom-right button (equals, amber) -->
+    <path
+        android:fillColor="#F2A93B"
+        android:pathData="M62,60 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+    <path
+        android:fillColor="#2A2018"
+        android:pathData="M58.5,58 h7 v1.8 h-7 z" />
+    <path
+        android:fillColor="#2A2018"
+        android:pathData="M58.5,61.2 h7 v1.8 h-7 z" />
 </vector>
