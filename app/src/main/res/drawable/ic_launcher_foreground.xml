@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Adaptive-icon foreground. The tile is kept inside the guaranteed safe zone
-    (roughly 30..78 on the 108dp canvas) so its rounded corners are never clipped
-    by the launcher's mask. Four buttons in a 2x2 grid: + and - on top, x and =
-    below, with the = in amber and dark-brown bars.
+    Adaptive-icon FOREGROUND. The grey rounded tile is drawn by the *background*
+    layer (@color/icon_background), which the launcher fills edge-to-edge and then
+    masks into whatever shape the device uses (squircle, circle, rounded square).
+    That is why the tile always fills the icon with no black corners.
+
+    This foreground holds only the four buttons, kept inside the guaranteed safe
+    zone (centres roughly 42..66 on the 108dp canvas) so none of them are clipped.
+    + and - on top, x and = below; = is amber with dark-brown bars.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -11,51 +15,46 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Rounded tile, light grey, sitting fully inside the safe zone -->
-    <path
-        android:fillColor="#3C3C3F"
-        android:pathData="M37,30 h34 a12,12 0 0 1 12,12 v34 a12,12 0 0 1 -12,12 h-34 a12,12 0 0 1 -12,-12 v-34 a12,12 0 0 1 12,-12 z" />
-
-    <!-- ===== button centres: TL(44,47) TR(64,47) BL(44,67) BR(64,67), r=9.5 ===== -->
+    <!-- ===== button centres: TL(43,45) TR(65,45) BL(43,67) BR(65,67), r=11 ===== -->
 
     <!-- Top-left (plus) -->
     <path
-        android:fillColor="#535357"
-        android:pathData="M44,47 m-9.5,0 a9.5,9.5 0 1,0 19,0 a9.5,9.5 0 1,0 -19,0 z" />
+        android:fillColor="#54545A"
+        android:pathData="M43,45 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 z" />
     <path
-        android:fillColor="#F5F5F5"
-        android:pathData="M42.6,41.8 h2.8 v10.4 h-2.8 z" />
+        android:fillColor="#F6F6F6"
+        android:pathData="M41.4,39 h3.2 v12 h-3.2 z" />
     <path
-        android:fillColor="#F5F5F5"
-        android:pathData="M38.8,45.6 h10.4 v2.8 h-10.4 z" />
+        android:fillColor="#F6F6F6"
+        android:pathData="M37,43.4 h12 v3.2 h-12 z" />
 
     <!-- Top-right (minus) -->
     <path
-        android:fillColor="#535357"
-        android:pathData="M64,47 m-9.5,0 a9.5,9.5 0 1,0 19,0 a9.5,9.5 0 1,0 -19,0 z" />
+        android:fillColor="#54545A"
+        android:pathData="M65,45 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 z" />
     <path
-        android:fillColor="#F5F5F5"
-        android:pathData="M58.8,45.6 h10.4 v2.8 h-10.4 z" />
+        android:fillColor="#F6F6F6"
+        android:pathData="M59,43.4 h12 v3.2 h-12 z" />
 
     <!-- Bottom-left (times) -->
     <path
-        android:fillColor="#535357"
-        android:pathData="M44,67 m-9.5,0 a9.5,9.5 0 1,0 19,0 a9.5,9.5 0 1,0 -19,0 z" />
+        android:fillColor="#54545A"
+        android:pathData="M43,67 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 z" />
     <path
-        android:fillColor="#F5F5F5"
-        android:pathData="M40.5,62.5 l7,7 l-2,2 l-7,-7 z" />
+        android:fillColor="#F6F6F6"
+        android:pathData="M38.9,61.9 l8.2,8.2 l-2.3,2.3 l-8.2,-8.2 z" />
     <path
-        android:fillColor="#F5F5F5"
-        android:pathData="M47.5,62.5 l2,2 l-7,7 l-2,-2 z" />
+        android:fillColor="#F6F6F6"
+        android:pathData="M47.1,61.9 l2.3,2.3 l-8.2,8.2 l-2.3,-2.3 z" />
 
     <!-- Bottom-right (equals, amber) -->
     <path
         android:fillColor="#F5A623"
-        android:pathData="M64,67 m-9.5,0 a9.5,9.5 0 1,0 19,0 a9.5,9.5 0 1,0 -19,0 z" />
+        android:pathData="M65,67 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 z" />
     <path
         android:fillColor="#6B4A12"
-        android:pathData="M58.8,63.8 h10.4 v2.6 h-10.4 z" />
+        android:pathData="M59,63.4 h12 v2.9 h-12 z" />
     <path
         android:fillColor="#6B4A12"
-        android:pathData="M58.8,68.2 h10.4 v2.6 h-10.4 z" />
+        android:pathData="M59,67.7 h12 v2.9 h-12 z" />
 </vector>
