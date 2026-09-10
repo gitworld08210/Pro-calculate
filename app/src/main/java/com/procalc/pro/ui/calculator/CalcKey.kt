@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.procalc.pro.ui.theme.LocalCalcPalette
 
-enum class KeyStyle { NUMBER, FUNCTION, OPERATOR, EQUALS }
+enum class KeyStyle { NUMBER, FUNCTION, FUNCTION_ACCENT, OPERATOR, EQUALS, MEMORY }
 
 /**
  * One key on the pad: a soft-gradient pill with a hairline edge, a spring press
@@ -58,8 +58,10 @@ fun CalcKey(
     val (top, bottom, contentColor) = when (style) {
         KeyStyle.NUMBER -> Triple(palette.numberKeyTop, palette.numberKeyBottom, palette.numberText)
         KeyStyle.FUNCTION -> Triple(palette.functionKeyTop, palette.functionKeyBottom, palette.functionText)
+        KeyStyle.FUNCTION_ACCENT -> Triple(palette.functionKeyTop, palette.functionKeyBottom, palette.accent)
         KeyStyle.OPERATOR -> Triple(palette.operatorKeyTop, palette.operatorKeyBottom, palette.operatorText)
         KeyStyle.EQUALS -> Triple(palette.equalsTop, palette.equalsBottom, palette.equalsText)
+        KeyStyle.MEMORY -> Triple(palette.functionKeyTop, palette.functionKeyBottom, palette.displaySecondary)
     }
 
     Box(

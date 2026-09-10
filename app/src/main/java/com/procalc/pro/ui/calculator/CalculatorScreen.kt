@@ -20,6 +20,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
+import androidx.compose.material.icons.outlined.CurrencyExchange
+import androidx.compose.material.icons.outlined.Fullscreen
+import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Functions
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +50,7 @@ import com.procalc.pro.engine.CalcState
 import com.procalc.pro.engine.Ops
 import com.procalc.pro.magic.ArmGesture
 import com.procalc.pro.magic.MagicSettings
+import com.procalc.pro.magic.Palette
 import com.procalc.pro.ui.theme.LocalCalcPalette
 import com.procalc.pro.vm.Key
 
@@ -58,6 +65,7 @@ fun CalculatorScreen(
     onOpenSecret: () -> Unit,
 ) {
     val palette = LocalCalcPalette.current
+    val systemStyle = settings.palette == Palette.SYSTEM_RED
 
     Box(
         modifier = Modifier
@@ -76,6 +84,10 @@ fun CalculatorScreen(
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
+            if (systemStyle) {
+                SystemTopBar()
+            }
+
             DisplayPanel(
                 state = state,
                 settings = settings,
@@ -83,18 +95,74 @@ fun CalculatorScreen(
                 onOpenSecret = onOpenSecret,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.30f),
+                    .weight(if (systemStyle) 0.24f else 0.30f),
             )
 
+            if (systemStyle) {
+                SystemToolIcons()
+            }
+
             Keypad(
+                systemStyle = systemStyle,
                 onKey = onKey,
                 onQuickSet = onQuickSet,
                 onPanic = onPanic,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.70f)
+                    .weight(if (systemStyle) 0.76f else 0.70f)
                     .padding(horizontal = 12.dp)
                     .padding(bottom = 10.dp),
+            )
+        }
+    }
+}
+
+/** The two dummy icons the stock calculator shows top-right (purely decorative). */
+@Composable
+private fun SystemTopBar() {
+    val palette = LocalCalcPalette.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Fullscreen,
+            contentDescription = null,
+            tint = palette.displayPrimary.copy(alpha = 0.85f),
+            modifier = Modifier.size(26.dp),
+        )
+        Spacer(Modifier.size(22.dp))
+        Icon(
+            imageVector = Icons.Outlined.Settings,
+            contentDescription = null,
+            tint = palette.displayPrimary.copy(alpha = 0.85f),
+            modifier = Modifier.size(24.dp),
+        )
+    }
+}
+
+/** History / scientific / converter icons above the keypad (purely decorative). */
+@Composable
+private fun SystemToolIcons() {
+    val palette = LocalCalcPalette.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 26.dp, end = 26.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(28.dp),
+    ) {
+        listOf(
+            Icons.Outlined.History,
+            Icons.Outlined.Functions,
+            Icons.Outlined.CurrencyExchange,
+        ).forEach { icon ->
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = palette.displaySecondary,
+                modifier = Modifier.size(22.dp),
             )
         }
     }
@@ -227,6 +295,7 @@ private data class KeySpec(
 
 @Composable
 private fun Keypad(
+    systemStyle: Boolean,
     onKey: (Key) -> Unit,
     onQuickSet: () -> Unit,
     onPanic: () -> Unit,
@@ -238,87 +307,101 @@ private fun Keypad(
         onClick = { onKey(Key.Digit(label.first())) },
     )
 
-    val rows: List<List<KeySpec>> = listOf(
-        listOf(
-            KeySpec(
-                style = KeyStyle.FUNCTION,
-                label = "AC",
-                fontSize = 24,
-                fontWeight = FontWeight.Medium,
-                onClick = { onKey(Key.Clear) },
-                onLongClick = onPanic,
-            ),
-            KeySpec(
-                style = KeyStyle.FUNCTION,
-                icon = Icons.Outlined.Backspace,
-                contentDescription = "Delete",
-                onClick = { onKey(Key.Backspace) },
-            ),
-            KeySpec(
-                style = KeyStyle.FUNCTION,
-                label = "%",
-                fontSize = 27,
-                onClick = { onKey(Key.Percent) },
-            ),
-            KeySpec(
-                style = KeyStyle.OPERATOR,
-                label = Ops.DIVIDE.toString(),
-                fontSize = 33,
-                onClick = { onKey(Key.Op(Ops.DIVIDE)) },
-            ),
-        ),
-        listOf(
-            number("7"), number("8"), number("9"),
-            KeySpec(
-                style = KeyStyle.OPERATOR,
-                label = Ops.TIMES.toString(),
-                fontSize = 33,
-                onClick = { onKey(Key.Op(Ops.TIMES)) },
-            ),
-        ),
-        listOf(
-            number("4"), number("5"), number("6"),
-            KeySpec(
-                style = KeyStyle.OPERATOR,
-                label = Ops.MINUS.toString(),
-                fontSize = 35,
-                onClick = { onKey(Key.Op(Ops.MINUS)) },
-            ),
-        ),
-        listOf(
-            number("1"), number("2"), number("3"),
-            KeySpec(
-                style = KeyStyle.OPERATOR,
-                label = Ops.PLUS.toString(),
-                fontSize = 33,
-                onClick = { onKey(Key.Op(Ops.PLUS)) },
-            ),
-        ),
-        listOf(
-            KeySpec(
-                style = KeyStyle.FUNCTION,
-                label = "\u00B1",
-                fontSize = 28,
-                onClick = { onKey(Key.Sign) },
-            ),
-            number("0"),
-            KeySpec(
-                style = KeyStyle.NUMBER,
-                label = ".",
-                fontSize = 34,
-                fontWeight = FontWeight.Medium,
-                onClick = { onKey(Key.Dot) },
-            ),
-            KeySpec(
-                style = KeyStyle.EQUALS,
-                label = "=",
-                fontSize = 34,
-                fontWeight = FontWeight.Normal,
-                onClick = { onKey(Key.Equals) },
-                onLongClick = onQuickSet,
-            ),
-        ),
+    // A dead memory key — visual only, so the pad matches the stock calculator.
+    fun memory(label: String) = KeySpec(
+        style = KeyStyle.MEMORY,
+        label = label,
+        fontSize = 20,
+        fontWeight = FontWeight.Normal,
+        onClick = { /* decorative */ },
     )
+
+    val clearKey = KeySpec(
+        style = if (systemStyle) KeyStyle.FUNCTION_ACCENT else KeyStyle.FUNCTION,
+        label = "AC",
+        fontSize = 24,
+        fontWeight = FontWeight.Medium,
+        onClick = { onKey(Key.Clear) },
+        onLongClick = onPanic,
+    )
+    val backspaceKey = KeySpec(
+        style = if (systemStyle) KeyStyle.FUNCTION_ACCENT else KeyStyle.FUNCTION,
+        icon = Icons.Outlined.Backspace,
+        contentDescription = "Delete",
+        onClick = { onKey(Key.Backspace) },
+    )
+    val signKey = KeySpec(
+        style = if (systemStyle) KeyStyle.FUNCTION_ACCENT else KeyStyle.FUNCTION,
+        label = "+/\u2212",
+        fontSize = if (systemStyle) 22 else 28,
+        onClick = { onKey(Key.Sign) },
+    )
+    val percentKey = KeySpec(
+        style = if (systemStyle) KeyStyle.FUNCTION_ACCENT else KeyStyle.FUNCTION,
+        label = "%",
+        fontSize = 27,
+        onClick = { onKey(Key.Percent) },
+    )
+    val divideKey = KeySpec(
+        style = KeyStyle.OPERATOR,
+        label = Ops.DIVIDE.toString(),
+        fontSize = 33,
+        onClick = { onKey(Key.Op(Ops.DIVIDE)) },
+    )
+    val timesKey = KeySpec(
+        style = KeyStyle.OPERATOR,
+        label = Ops.TIMES.toString(),
+        fontSize = 33,
+        onClick = { onKey(Key.Op(Ops.TIMES)) },
+    )
+    val minusKey = KeySpec(
+        style = KeyStyle.OPERATOR,
+        label = Ops.MINUS.toString(),
+        fontSize = 35,
+        onClick = { onKey(Key.Op(Ops.MINUS)) },
+    )
+    val plusKey = KeySpec(
+        style = KeyStyle.OPERATOR,
+        label = Ops.PLUS.toString(),
+        fontSize = 33,
+        onClick = { onKey(Key.Op(Ops.PLUS)) },
+    )
+    val dotKey = KeySpec(
+        style = KeyStyle.NUMBER,
+        label = ".",
+        fontSize = 34,
+        fontWeight = FontWeight.Medium,
+        onClick = { onKey(Key.Dot) },
+    )
+    val equalsKey = KeySpec(
+        style = KeyStyle.EQUALS,
+        label = "=",
+        fontSize = 34,
+        fontWeight = FontWeight.Normal,
+        onClick = { onKey(Key.Equals) },
+        onLongClick = onQuickSet,
+    )
+
+    val rows: List<List<KeySpec>> = if (systemStyle) {
+        listOf(
+            listOf(memory("mc"), memory("m+"), memory("m\u2212"), memory("mr")),
+            listOf(clearKey, backspaceKey, signKey, divideKey),
+            listOf(number("7"), number("8"), number("9"), timesKey),
+            listOf(number("4"), number("5"), number("6"), minusKey),
+            listOf(number("1"), number("2"), number("3"), plusKey),
+            listOf(percentKey, number("0"), dotKey, equalsKey),
+        )
+    } else {
+        listOf(
+            listOf(clearKey, backspaceKey, percentKey, divideKey),
+            listOf(number("7"), number("8"), number("9"), timesKey),
+            listOf(number("4"), number("5"), number("6"), minusKey),
+            listOf(number("1"), number("2"), number("3"), plusKey),
+            listOf(signKey, number("0"), dotKey, equalsKey),
+        )
+    }
+
+    val keyPadding = if (systemStyle) 7.dp else 6.dp
 
     Column(modifier = modifier) {
         rows.forEach { row ->
@@ -340,7 +423,7 @@ private fun Keypad(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
-                            .padding(6.dp),
+                            .padding(keyPadding),
                     )
                 }
             }
