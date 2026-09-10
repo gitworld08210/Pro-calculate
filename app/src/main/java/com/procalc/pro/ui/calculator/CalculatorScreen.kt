@@ -250,12 +250,14 @@ private fun DisplayPanel(
                 !state.resultShown
             val primaryText = if (idle) "" else state.display
 
+            val systemStyle = settings.palette == Palette.SYSTEM_RED
             Text(
                 text = primaryText,
                 color = palette.displayPrimary,
                 fontSize = displayFontSize(primaryText).sp,
-                fontWeight = FontWeight.Light,
-                letterSpacing = (-1.5).sp,
+                // The stock calculator shows a heavy result but light keypad digits.
+                fontWeight = if (systemStyle) FontWeight.SemiBold else FontWeight.Light,
+                letterSpacing = if (systemStyle) (-1.0).sp else (-1.5).sp,
                 maxLines = 1,
                 softWrap = false,
                 textAlign = TextAlign.End,
@@ -310,8 +312,9 @@ private fun Keypad(
     fun number(label: String) = KeySpec(
         style = KeyStyle.NUMBER,
         label = label,
-        fontSize = if (systemStyle) 29 else 31,
-        fontWeight = if (systemStyle) FontWeight.Normal else FontWeight.Light,
+        // Stock keypad digits are large and light.
+        fontSize = if (systemStyle) 31 else 31,
+        fontWeight = FontWeight.Light,
         onClick = { onKey(Key.Digit(label.first())) },
     )
 
@@ -320,7 +323,7 @@ private fun Keypad(
         style = KeyStyle.MEMORY,
         label = label,
         fontSize = 20,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Light,
         onClick = { /* decorative */ },
     )
 
@@ -349,7 +352,7 @@ private fun Keypad(
         style = KeyStyle.FUNCTION,
         label = "%",
         fontSize = 27,
-        fontWeight = if (systemStyle) FontWeight.Normal else FontWeight.Light,
+        fontWeight = FontWeight.Light,
         onClick = { onKey(Key.Percent) },
     )
     val divideKey = KeySpec(
@@ -379,8 +382,8 @@ private fun Keypad(
     val dotKey = KeySpec(
         style = KeyStyle.NUMBER,
         label = ".",
-        fontSize = 34,
-        fontWeight = if (systemStyle) FontWeight.Normal else FontWeight.Medium,
+        fontSize = 40,
+        fontWeight = if (systemStyle) FontWeight.Bold else FontWeight.Medium,
         onClick = { onKey(Key.Dot) },
     )
     val equalsKey = KeySpec(

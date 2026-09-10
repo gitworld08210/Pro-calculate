@@ -12,8 +12,8 @@ android {
         applicationId = "com.procalc.pro"
         minSdk = 26
         targetSdk = 35
-        versionCode = 7
-        versionName = "1.6.0"
+        versionCode = 8
+        versionName = "1.7.0"
         resourceConfigurations += listOf("en")
     }
 
