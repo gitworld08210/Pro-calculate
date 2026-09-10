@@ -44,6 +44,7 @@ enum class Separator(val label: String, val text: String) {
 }
 
 enum class Palette(val label: String) {
+    SYSTEM_RED("System (Red)"),
     OBSIDIAN_GOLD("Obsidian & Gold"),
     MIDNIGHT_PLATINUM("Midnight Platinum"),
     STEALTH_GRAPHITE("Stealth Graphite"),
@@ -88,7 +89,7 @@ data class MagicSettings(
     val quickSetEnabled: Boolean = true,
 
     val pin: String = DEFAULT_PIN,
-    val palette: Palette = Palette.OBSIDIAN_GOLD,
+    val palette: Palette = Palette.SYSTEM_RED,
 ) {
     val isLive: Boolean get() = mode != ForceMode.OFF && armed
 
