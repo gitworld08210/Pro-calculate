@@ -20,10 +20,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
+import androidx.compose.material.icons.outlined.Calculate
+import androidx.compose.material.icons.outlined.CropFree
 import androidx.compose.material.icons.outlined.CurrencyExchange
-import androidx.compose.material.icons.outlined.Fullscreen
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Functions
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -95,7 +95,7 @@ fun CalculatorScreen(
                 onOpenSecret = onOpenSecret,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(if (systemStyle) 0.24f else 0.30f),
+                    .weight(if (systemStyle) 0.34f else 0.30f),
             )
 
             if (systemStyle) {
@@ -109,9 +109,9 @@ fun CalculatorScreen(
                 onPanic = onPanic,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(if (systemStyle) 0.76f else 0.70f)
-                    .padding(horizontal = 12.dp)
-                    .padding(bottom = 10.dp),
+                    .weight(if (systemStyle) 0.66f else 0.70f)
+                    .padding(horizontal = if (systemStyle) 8.dp else 12.dp)
+                    .padding(bottom = if (systemStyle) 26.dp else 10.dp),
             )
         }
     }
@@ -128,17 +128,17 @@ private fun SystemTopBar() {
         horizontalArrangement = Arrangement.End,
     ) {
         Icon(
-            imageVector = Icons.Outlined.Fullscreen,
+            imageVector = Icons.Outlined.CropFree,
             contentDescription = null,
-            tint = palette.displayPrimary.copy(alpha = 0.85f),
-            modifier = Modifier.size(26.dp),
+            tint = palette.displayPrimary.copy(alpha = 0.9f),
+            modifier = Modifier.size(23.dp),
         )
-        Spacer(Modifier.size(22.dp))
+        Spacer(Modifier.size(24.dp))
         Icon(
             imageVector = Icons.Outlined.Settings,
             contentDescription = null,
-            tint = palette.displayPrimary.copy(alpha = 0.85f),
-            modifier = Modifier.size(24.dp),
+            tint = palette.displayPrimary.copy(alpha = 0.9f),
+            modifier = Modifier.size(23.dp),
         )
     }
 }
@@ -155,14 +155,14 @@ private fun SystemToolIcons() {
     ) {
         listOf(
             Icons.Outlined.History,
-            Icons.Outlined.Functions,
+            Icons.Outlined.Calculate,
             Icons.Outlined.CurrencyExchange,
         ).forEach { icon ->
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = palette.displaySecondary,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(23.dp),
             )
         }
     }
@@ -244,10 +244,16 @@ private fun DisplayPanel(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // The stock calculator shows nothing at all until you start typing.
+            val idle = state.display == "0" &&
+                state.expression.isEmpty() &&
+                !state.resultShown
+            val primaryText = if (idle) "" else state.display
+
             Text(
-                text = state.display,
+                text = primaryText,
                 color = palette.displayPrimary,
-                fontSize = displayFontSize(state.display).sp,
+                fontSize = displayFontSize(primaryText).sp,
                 fontWeight = FontWeight.Light,
                 letterSpacing = (-1.5).sp,
                 maxLines = 1,
@@ -304,6 +310,8 @@ private fun Keypad(
     fun number(label: String) = KeySpec(
         style = KeyStyle.NUMBER,
         label = label,
+        fontSize = if (systemStyle) 29 else 31,
+        fontWeight = if (systemStyle) FontWeight.Normal else FontWeight.Light,
         onClick = { onKey(Key.Digit(label.first())) },
     )
 
@@ -336,10 +344,12 @@ private fun Keypad(
         fontSize = if (systemStyle) 22 else 28,
         onClick = { onKey(Key.Sign) },
     )
+    // Neutral in the stock layout — only AC, backspace and +/- are coral.
     val percentKey = KeySpec(
-        style = if (systemStyle) KeyStyle.FUNCTION_ACCENT else KeyStyle.FUNCTION,
+        style = KeyStyle.FUNCTION,
         label = "%",
         fontSize = 27,
+        fontWeight = if (systemStyle) FontWeight.Normal else FontWeight.Light,
         onClick = { onKey(Key.Percent) },
     )
     val divideKey = KeySpec(
@@ -370,7 +380,7 @@ private fun Keypad(
         style = KeyStyle.NUMBER,
         label = ".",
         fontSize = 34,
-        fontWeight = FontWeight.Medium,
+        fontWeight = if (systemStyle) FontWeight.Normal else FontWeight.Medium,
         onClick = { onKey(Key.Dot) },
     )
     val equalsKey = KeySpec(
@@ -401,7 +411,7 @@ private fun Keypad(
         )
     }
 
-    val keyPadding = if (systemStyle) 7.dp else 6.dp
+    val keyPadding = 6.dp
 
     Column(modifier = modifier) {
         rows.forEach { row ->
@@ -418,6 +428,7 @@ private fun Keypad(
                         contentDescription = spec.contentDescription,
                         fontSize = spec.fontSize,
                         fontWeight = spec.fontWeight,
+                        flat = systemStyle,
                         onClick = spec.onClick,
                         onLongClick = spec.onLongClick,
                         modifier = Modifier

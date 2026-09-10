@@ -134,27 +134,30 @@ private val SystemRed = CalcPalette(
     backdropEdge = Color(0xFF000000),
 
     displayPrimary = Color(0xFFFFFFFF),
-    displaySecondary = Color(0xFF8C8C8C),
+    // Memory-key lettering (mc / m+ / m- / mr) and the secondary display line.
+    displaySecondary = Color(0xFF8A8A8A),
 
-    numberKeyTop = Color(0xFF2A2A2A),
-    numberKeyBottom = Color(0xFF242424),
-    numberText = Color(0xFFEDEDED),
+    // Flat fills — the stock keys have no gradient at all.
+    numberKeyTop = Color(0xFF2C2C2C),
+    numberKeyBottom = Color(0xFF2C2C2C),
+    numberText = Color(0xFFE8E8E8),
 
-    // Memory / secondary keys sit a touch darker than the number keys.
-    functionKeyTop = Color(0xFF262626),
-    functionKeyBottom = Color(0xFF202020),
-    functionText = Color(0xFFEDEDED),
+    // Neutral secondary keys, e.g. the % key.
+    functionKeyTop = Color(0xFF2C2C2C),
+    functionKeyBottom = Color(0xFF2C2C2C),
+    functionText = Color(0xFFE8E8E8),
 
-    operatorKeyTop = Color(0xFF3A1414),
-    operatorKeyBottom = Color(0xFF301010),
-    operatorText = Color(0xFFE8604C),
+    operatorKeyTop = Color(0xFF3B1512),
+    operatorKeyBottom = Color(0xFF3B1512),
+    operatorText = Color(0xFFD9503C),
 
-    equalsTop = Color(0xFFF2705C),
-    equalsBottom = Color(0xFFEC5B45),
+    equalsTop = Color(0xFFEE6C55),
+    equalsBottom = Color(0xFFEE6C55),
     equalsText = Color(0xFFFFFFFF),
 
     hairline = Color(0x00000000),
-    accent = Color(0xFFEC5B45),
+    // AC, backspace and +/- all take this coral.
+    accent = Color(0xFFE8604C),
     surface = Color(0xFF141414),
     surfaceElevated = Color(0xFF1E1E1E),
 )

@@ -42,6 +42,8 @@ fun CalcKey(
     contentDescription: String? = null,
     fontSize: Int = 30,
     fontWeight: FontWeight = FontWeight.Light,
+    /** Suppresses the top-edge sheen — the stock system keys are perfectly flat. */
+    flat: Boolean = false,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
 ) {
@@ -89,18 +91,20 @@ fun CalcKey(
         contentAlignment = Alignment.Center,
     ) {
         // A whisper of light along the top edge to give the key some depth.
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(percent = 50))
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.White.copy(alpha = if (style == KeyStyle.EQUALS) 0.10f else 0.045f),
-                        0.45f to Color.Transparent,
+        if (!flat) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(percent = 50))
+                    .background(
+                        Brush.verticalGradient(
+                            0f to Color.White.copy(alpha = if (style == KeyStyle.EQUALS) 0.10f else 0.045f),
+                            0.45f to Color.Transparent,
+                        )
                     )
-                )
-                .alpha(if (pressed) 0.4f else 1f)
-        )
+                    .alpha(if (pressed) 0.4f else 1f)
+            )
+        }
 
         when {
             icon != null -> Icon(

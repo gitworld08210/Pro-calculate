@@ -14,7 +14,7 @@ Built with Kotlin and Jetpack Compose. Installs as **Calculator**.
 
 ## Install
 
-Download **`dist/ProCalculator-1.2.0.apk`** from this repository onto your phone
+Download **`dist/ProCalculator-1.3.0.apk`** from this repository onto your phone
 and open it. Android will ask you to allow installs from this source — that is
 normal for an app that does not come from the Play Store.
 
