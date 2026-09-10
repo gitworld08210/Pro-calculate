@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Adaptive-icon foreground. The launcher applies a large safe-zone crop, so all
-    artwork sits inside the central ~66dp of the 108dp canvas. Four calculator
-    buttons in a 2x2 grid: +  -  on top, x  =  below, with the = in amber.
+    Adaptive-icon foreground. The launcher crops to the central safe zone (~66 of
+    the 108dp canvas), so the tile is drawn large — roughly 24..84 — to fill that
+    zone the way the reference icon does. Four buttons in a 2x2 grid: + and - on
+    top, x and = below, with the = in amber and dark-brown bars.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -10,49 +11,51 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Rounded tile behind the buttons -->
+    <!-- Rounded tile, drawn large so it nearly fills the safe zone -->
     <path
-        android:fillColor="#3A3A40"
-        android:pathData="M38,34 h32 a10,10 0 0 1 10,10 v20 a10,10 0 0 1 -10,10 h-32 a10,10 0 0 1 -10,-10 v-20 a10,10 0 0 1 10,-10 z" />
+        android:fillColor="#2E2E31"
+        android:pathData="M34,24 h40 a13,13 0 0 1 13,13 v40 a13,13 0 0 1 -13,13 h-40 a13,13 0 0 1 -13,-13 v-40 a13,13 0 0 1 13,-13 z" />
 
-    <!-- Top-left button (plus) -->
-    <path
-        android:fillColor="#5A5A62"
-        android:pathData="M46,44 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
-    <path
-        android:fillColor="#F2F2F2"
-        android:pathData="M45,40.5 h2 v7 h-2 z" />
-    <path
-        android:fillColor="#F2F2F2"
-        android:pathData="M42.5,43 h7 v2 h-7 z" />
+    <!-- ============ button centres: TL(41,44) TR(67,44) BL(41,70) BR(67,70), r=12 ============ -->
 
-    <!-- Top-right button (minus) -->
+    <!-- Top-left (plus) -->
     <path
-        android:fillColor="#5A5A62"
-        android:pathData="M62,44 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+        android:fillColor="#4A4A4E"
+        android:pathData="M41,44 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 z" />
     <path
-        android:fillColor="#F2F2F2"
-        android:pathData="M58.5,43 h7 v2 h-7 z" />
+        android:fillColor="#F5F5F5"
+        android:pathData="M39.2,37.5 h3.6 v13 h-3.6 z" />
+    <path
+        android:fillColor="#F5F5F5"
+        android:pathData="M34.5,42.2 h13 v3.6 h-13 z" />
 
-    <!-- Bottom-left button (times) -->
+    <!-- Top-right (minus) -->
     <path
-        android:fillColor="#5A5A62"
-        android:pathData="M46,60 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+        android:fillColor="#4A4A4E"
+        android:pathData="M67,44 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 z" />
     <path
-        android:fillColor="#F2F2F2"
-        android:pathData="M43.4,56.6 l5.2,5.2 l-1.4,1.4 l-5.2,-5.2 z" />
-    <path
-        android:fillColor="#F2F2F2"
-        android:pathData="M48.6,56.6 l1.4,1.4 l-5.2,5.2 l-1.4,-1.4 z" />
+        android:fillColor="#F5F5F5"
+        android:pathData="M60.5,42.2 h13 v3.6 h-13 z" />
 
-    <!-- Bottom-right button (equals, amber) -->
+    <!-- Bottom-left (times) -->
     <path
-        android:fillColor="#F2A93B"
-        android:pathData="M62,60 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+        android:fillColor="#4A4A4E"
+        android:pathData="M41,70 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 z" />
     <path
-        android:fillColor="#2A2018"
-        android:pathData="M58.5,58 h7 v1.8 h-7 z" />
+        android:fillColor="#F5F5F5"
+        android:pathData="M36.6,64.1 l8.8,8.8 l-2.5,2.5 l-8.8,-8.8 z" />
     <path
-        android:fillColor="#2A2018"
-        android:pathData="M58.5,61.2 h7 v1.8 h-7 z" />
+        android:fillColor="#F5F5F5"
+        android:pathData="M45.4,64.1 l2.5,2.5 l-8.8,8.8 l-2.5,-2.5 z" />
+
+    <!-- Bottom-right (equals, amber) -->
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M67,70 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 z" />
+    <path
+        android:fillColor="#6B4A12"
+        android:pathData="M60.5,66.4 h13 v3.1 h-13 z" />
+    <path
+        android:fillColor="#6B4A12"
+        android:pathData="M60.5,71.9 h13 v3.1 h-13 z" />
 </vector>
