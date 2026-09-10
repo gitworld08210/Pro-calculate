@@ -1,0 +1,349 @@
+package com.procalc.pro.ui.calculator
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Backspace
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.procalc.pro.engine.CalcState
+import com.procalc.pro.engine.Ops
+import com.procalc.pro.magic.ArmGesture
+import com.procalc.pro.magic.MagicSettings
+import com.procalc.pro.ui.theme.LocalCalcPalette
+import com.procalc.pro.vm.Key
+
+@Composable
+fun CalculatorScreen(
+    state: CalcState,
+    settings: MagicSettings,
+    onKey: (Key) -> Unit,
+    onQuickSet: () -> Unit,
+    onArmToggle: () -> Unit,
+    onPanic: () -> Unit,
+    onOpenSecret: () -> Unit,
+) {
+    val palette = LocalCalcPalette.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    0.0f to palette.backdropCore,
+                    0.5f to palette.backdropEdge,
+                    1.0f to palette.backdropEdge,
+                )
+            )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+        ) {
+            DisplayPanel(
+                state = state,
+                settings = settings,
+                onArmToggle = onArmToggle,
+                onOpenSecret = onOpenSecret,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.30f),
+            )
+
+            Keypad(
+                onKey = onKey,
+                onQuickSet = onQuickSet,
+                onPanic = onPanic,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.70f)
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 10.dp),
+            )
+        }
+    }
+}
+
+// ------------------------------------------------------------------ display
+
+@Composable
+private fun DisplayPanel(
+    state: CalcState,
+    settings: MagicSettings,
+    onArmToggle: () -> Unit,
+    onOpenSecret: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalCalcPalette.current
+    var size by remember { mutableStateOf(IntSize.Zero) }
+
+    val expressionScroll = rememberScrollState()
+    val valueScroll = rememberScrollState()
+
+    LaunchedEffect(state.expression) { expressionScroll.scrollTo(expressionScroll.maxValue) }
+    LaunchedEffect(state.display) { valueScroll.scrollTo(valueScroll.maxValue) }
+
+    Box(
+        modifier = modifier
+            .onSizeChanged { size = it }
+            .pointerInput(settings.armGesture, size) {
+                detectTapGestures(
+                    onLongPress = { offset ->
+                        when {
+                            inTopLeft(offset, size) -> onOpenSecret()
+                            settings.armGesture == ArmGesture.LONG_PRESS_DISPLAY -> onArmToggle()
+                        }
+                    },
+                    onDoubleTap = { offset ->
+                        when (settings.armGesture) {
+                            ArmGesture.DOUBLE_TAP_TOP_RIGHT ->
+                                if (inTopRight(offset, size)) onArmToggle()
+                            ArmGesture.DOUBLE_TAP_TOP_LEFT ->
+                                if (inTopLeft(offset, size)) onArmToggle()
+                            ArmGesture.LONG_PRESS_DISPLAY -> Unit
+                        }
+                    },
+                )
+            }
+    ) {
+        // Near-invisible confirmation that a routine is live. Unreadable at arm's length.
+        if (settings.armedIndicator && settings.isLive) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 10.dp, top = 10.dp)
+                    .size(4.dp)
+                    .clip(CircleShape)
+                    .background(palette.accent.copy(alpha = 0.30f))
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.End,
+        ) {
+            Text(
+                text = state.expression,
+                color = palette.displaySecondary,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Normal,
+                maxLines = 1,
+                softWrap = false,
+                textAlign = TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(expressionScroll),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = state.display,
+                color = palette.displayPrimary,
+                fontSize = displayFontSize(state.display).sp,
+                fontWeight = FontWeight.Light,
+                letterSpacing = (-1.5).sp,
+                maxLines = 1,
+                softWrap = false,
+                textAlign = TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(valueScroll),
+            )
+        }
+    }
+}
+
+private fun inTopLeft(offset: Offset, size: IntSize): Boolean =
+    size.width > 0 && offset.x < size.width * 0.35f && offset.y < size.height * 0.45f
+
+private fun inTopRight(offset: Offset, size: IntSize): Boolean =
+    size.width > 0 && offset.x > size.width * 0.65f && offset.y < size.height * 0.45f
+
+/** Shrinks the primary line so long results and dates never clip. */
+private fun displayFontSize(text: String): Int = when (text.length) {
+    in 0..7 -> 72
+    8 -> 66
+    9 -> 60
+    10 -> 54
+    11 -> 49
+    12 -> 45
+    13 -> 42
+    14, 15 -> 38
+    else -> 32
+}
+
+// ------------------------------------------------------------------- keypad
+
+private data class KeySpec(
+    val style: KeyStyle,
+    val label: String? = null,
+    val icon: ImageVector? = null,
+    val contentDescription: String? = null,
+    val fontSize: Int = 31,
+    val fontWeight: FontWeight = FontWeight.Light,
+    val onClick: () -> Unit,
+    val onLongClick: (() -> Unit)? = null,
+)
+
+@Composable
+private fun Keypad(
+    onKey: (Key) -> Unit,
+    onQuickSet: () -> Unit,
+    onPanic: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    fun number(label: String) = KeySpec(
+        style = KeyStyle.NUMBER,
+        label = label,
+        onClick = { onKey(Key.Digit(label.first())) },
+    )
+
+    val rows: List<List<KeySpec>> = listOf(
+        listOf(
+            KeySpec(
+                style = KeyStyle.FUNCTION,
+                label = "AC",
+                fontSize = 24,
+                fontWeight = FontWeight.Medium,
+                onClick = { onKey(Key.Clear) },
+                onLongClick = onPanic,
+            ),
+            KeySpec(
+                style = KeyStyle.FUNCTION,
+                icon = Icons.Outlined.Backspace,
+                contentDescription = "Delete",
+                onClick = { onKey(Key.Backspace) },
+            ),
+            KeySpec(
+                style = KeyStyle.FUNCTION,
+                label = "%",
+                fontSize = 27,
+                onClick = { onKey(Key.Percent) },
+            ),
+            KeySpec(
+                style = KeyStyle.OPERATOR,
+                label = Ops.DIVIDE.toString(),
+                fontSize = 33,
+                onClick = { onKey(Key.Op(Ops.DIVIDE)) },
+            ),
+        ),
+        listOf(
+            number("7"), number("8"), number("9"),
+            KeySpec(
+                style = KeyStyle.OPERATOR,
+                label = Ops.TIMES.toString(),
+                fontSize = 33,
+                onClick = { onKey(Key.Op(Ops.TIMES)) },
+            ),
+        ),
+        listOf(
+            number("4"), number("5"), number("6"),
+            KeySpec(
+                style = KeyStyle.OPERATOR,
+                label = Ops.MINUS.toString(),
+                fontSize = 35,
+                onClick = { onKey(Key.Op(Ops.MINUS)) },
+            ),
+        ),
+        listOf(
+            number("1"), number("2"), number("3"),
+            KeySpec(
+                style = KeyStyle.OPERATOR,
+                label = Ops.PLUS.toString(),
+                fontSize = 33,
+                onClick = { onKey(Key.Op(Ops.PLUS)) },
+            ),
+        ),
+        listOf(
+            KeySpec(
+                style = KeyStyle.FUNCTION,
+                label = "\u00B1",
+                fontSize = 28,
+                onClick = { onKey(Key.Sign) },
+            ),
+            number("0"),
+            KeySpec(
+                style = KeyStyle.NUMBER,
+                label = ".",
+                fontSize = 34,
+                fontWeight = FontWeight.Medium,
+                onClick = { onKey(Key.Dot) },
+            ),
+            KeySpec(
+                style = KeyStyle.EQUALS,
+                label = "=",
+                fontSize = 34,
+                fontWeight = FontWeight.Normal,
+                onClick = { onKey(Key.Equals) },
+                onLongClick = onQuickSet,
+            ),
+        ),
+    )
+
+    Column(modifier = modifier) {
+        rows.forEach { row ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                row.forEach { spec ->
+                    CalcKey(
+                        style = spec.style,
+                        label = spec.label,
+                        icon = spec.icon,
+                        contentDescription = spec.contentDescription,
+                        fontSize = spec.fontSize,
+                        fontWeight = spec.fontWeight,
+                        onClick = spec.onClick,
+                        onLongClick = spec.onLongClick,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .padding(6.dp),
+                    )
+                }
+            }
+        }
+    }
+}
